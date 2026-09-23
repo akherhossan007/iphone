@@ -5,6 +5,9 @@ on:
   push:
     branches: [ main, master ]
 
+permissions:
+  contents: write
+
 jobs:
   build-ios:
     name: Build GlowBay iOS IPA
@@ -22,24 +25,24 @@ jobs:
 
       - name: 📦 Install Flutter Dependencies
         run: |
-          echo "### Flutter & Dart Version" >> $GITHUB_STEP_SUMMARY
-          flutter --version >> $GITHUB_STEP_SUMMARY
-          echo "### Pub Get Result" >> $GITHUB_STEP_SUMMARY
-          if ! flutter pub get > pub_err.txt 2>&1; then
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            cat pub_err.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            cat pub_err.txt
+          echo "=== FLUTTER VERSION ===" > pub_err.txt
+          flutter --version >> pub_err.txt 2>&1
+          echo "=== PUB GET ===" >> pub_err.txt
+          flutter pub get >> pub_err.txt 2>&1 || true
+          cat pub_err.txt
+          if [ ! -f .dart_tool/package_config.json ]; then
             exit 1
           fi
-          echo "Pub get succeeded!" >> $GITHUB_STEP_SUMMARY
 
-      - name: 📄 Upload Error Log on Failure
+      - name: 📄 Push Error Log on Failure
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-failure-log
-          path: pub_err.txt
+        run: |
+          git config user.name "CI Log Bot"
+          git config user.email "bot@glowbay.com"
+          git checkout -B ci-log
+          git add pub_err.txt
+          git commit -m "log: capture pub_err.txt"
+          git push -f origin ci-log
 
       - name: 🍏 CocoaPods Setup
         run: |
@@ -66,3 +69,13 @@ jobs:
           name: GlowBay-App-iOS-IPA
           path: GlowBay-App.ipa
           retention-days: 14
+
+      - name: 📦 Push IPA to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          tag_name: v1.0.0-ios
+          name: "GlowBay iOS Release IPA"
+          files: GlowBay-App.ipa
+          draft: false
+          prerelease: false
