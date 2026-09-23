@@ -1,0 +1,93 @@
+class AppTranslations {
+  static const Map<String, Map<String, String>> _values = {
+    // Navigation
+    'nav_home': {'en': 'Home', 'bn': 'হোম'},
+    'nav_catalog': {'en': 'Catalog', 'bn': 'ক্যাটালগ'},
+    'nav_cart': {'en': 'Cart', 'bn': 'কার্ট'},
+    'nav_wishlist': {'en': 'Wishlist', 'bn': 'উইশলিস্ট'},
+    'nav_account': {'en': 'Account', 'bn': 'প্রোফাইল'},
+
+    // Common UI
+    'search_hint': {'en': 'Search authentic Malaysian skincare...', 'bn': 'অরিজিনাল মালয়েশিয়ান স্কিনকেয়ার খুঁজুন...'},
+    'brand': {'en': 'Brand', 'bn': 'ব্র্যান্ড'},
+    'chat': {'en': 'Chat', 'bn': 'চ্যাট'},
+    'buy_now': {'en': 'Buy Now', 'bn': 'Buy Now'},
+    'add_to_cart': {'en': 'Add to Cart', 'bn': 'Add to Cart'},
+    'view_all_products': {'en': 'View All Products', 'bn': 'সব পণ্য দেখুন'},
+    'seller_ratings': {'en': 'Seller Ratings', 'bn': 'Seller Ratings'},
+    'authentic_products': {'en': '100% Authentic Products', 'bn': '১০০% আসল পণ্য'},
+    'kl_central_hub': {'en': 'Kuala Lumpur Central Hub ...', 'bn': 'কুয়ালালামপুর সেন্ট্রাল হাব ...'},
+    'kl_stock_banner': {'en': 'KL Stock Ready • Direct Flight 10–25 Days Home Delivery', 'bn': 'কুয়ালালামপুর স্টকে রেডি • সরাসরি ফ্লাইটে ১০–২৫ দিনে হোম ডেলিভারি'},
+    'social_orders_text': {'en': 'pre-ordered this week • Malaysia Hub Active', 'bn': 'জন এই সপ্তাহে প্রি-অর্ডার করেছেন • মালয়েশিয়া হাব অ্যাক্টিভ'},
+    'estimated_delivery': {'en': 'Estimated Delivery', 'bn': 'সম্ভাব্য ডেলিভারি'},
+    'air_flight': {'en': 'Direct Air Cargo', 'bn': 'সরাসরি এয়ার ফ্লাইট'},
+    'intact_seal': {'en': 'Intact Seal', 'bn': 'ইনট্যাক্ট সিল'},
+    'quantity': {'en': 'Quantity', 'bn': 'পরিমাণ'},
+    'customer_reviews': {'en': 'Customer Reviews', 'bn': 'কাস্টমার রিভিউ'},
+    'you_may_also_like': {'en': 'You May Also Like', 'bn': 'আপনার পছন্দ হতে পারে'},
+    'login_required': {'en': 'Login Required', 'bn': 'লগইন প্রয়োজন'},
+    'login_prompt_msg': {'en': 'Please login with your GlowBayBD account to proceed with checkout.', 'bn': 'অর্ডার সম্পন্ন করতে আপনার GlowBayBD একাউন্টে লগইন করুন।'},
+    'cancel': {'en': 'Cancel', 'bn': 'বাতিল'},
+    'login_register': {'en': 'Log In / Register', 'bn': 'লগইন / রেজিস্টার'},
+
+    // Order Tracking & Status
+    'live_order_tracking': {'en': 'Live Order Tracking', 'bn': 'লাইভ অর্ডার ট্র্যাকিং'},
+    'order_cancelled_title': {'en': 'Order Cancelled', 'bn': 'অর্ডারটি বাতিল করা হয়েছে'},
+    'order_cancelled_desc': {'en': 'This order was cancelled and will not be processed or delivered. If you have any inquiries, our support team is available 24/7 on WhatsApp.', 'bn': 'এই অর্ডারটি বাতিল করা হয়েছে এবং এটি আর ডেলিভারি করা হবে না। কোনো তথ্য জানার থাকলে অনুগ্রহ করে আমাদের হোয়াটসঅ্যাপ সাপোর্টে যোগাযোগ করুন।'},
+    'order_refunded_title': {'en': 'Order Refunded', 'bn': 'অর্ডারের মূল্য রিফান্ড করা হয়েছে'},
+    'order_refunded_desc': {'en': 'The payment for this order has been fully refunded.', 'bn': 'এই অর্ডারের মূল্য রিফান্ড করে দেওয়া হয়েছে।'},
+    'contact_whatsapp_support': {'en': 'Chat with VIP Support on WhatsApp', 'bn': 'হোয়াটসঅ্যাপে ভিআইপি সাপোর্ট'},
+    'courier_delivery_update': {'en': 'Courier Delivery Update', 'bn': 'কুরিয়ার ডেলিভারি আপডেট'},
+    'tracking_lifecycle': {'en': '5-Stage Cross-Border Tracking', 'bn': '৫-ধাপের ক্রস-বর্ডার ট্র্যাকিং লাইফসাইকেল'},
+    'stage_of_five': {'en': 'Stage', 'bn': 'ধাপ'},
+    'cross_border_origin': {'en': 'Kuala Lumpur', 'bn': 'কুয়ালালামপুর'},
+    'sourcing_hub': {'en': 'Sourcing Hub', 'bn': 'সোর্সিং হাব'},
+    'air_cargo': {'en': 'Air Cargo', 'bn': 'এয়ার কার্গো'},
+    'two_to_four_days': {'en': '2–4 Business Days', 'bn': '২–৪ কার্যদিবস'},
+    'destination_dhaka': {'en': 'Dhaka Central', 'bn': 'ঢাকা সেন্ট্রাল'},
+    'dhaka_metro': {'en': 'Dhaka Metro', 'bn': 'ঢাকা মেট্রো'},
+    'outside_dhaka': {'en': 'Outside Dhaka', 'bn': 'ঢাকার বাইরে'},
+    'consignment_id': {'en': 'Consignment Code', 'bn': 'কনসাইনমেন্ট কোড'},
+    'copied_clipboard': {'en': 'Copied to clipboard', 'bn': 'কপি করা হয়েছে'},
+    'cod_balance_label': {'en': 'Payable on Delivery (Remaining 50%)', 'bn': 'ডেলিভারির সময় প্রদেয় (বাকি ৫০%)'},
+    'cod_badge': {'en': 'Cash on Delivery', 'bn': 'ক্যাশ অন ডেলিভারি'},
+    'delivery_address': {'en': 'Delivery Address', 'bn': 'ডেলিভারি ঠিকানা'},
+    'order_items': {'en': 'Order Items', 'bn': 'অর্ডারকৃত পণ্যসমূহ'},
+    'total_amount': {'en': 'Total Amount', 'bn': 'সর্বমোট মূল্য'},
+    'paid_advance': {'en': 'Paid in Advance', 'bn': 'অগ্রিম পরিশোধ'},
+    'remaining_cod': {'en': 'Remaining COD', 'bn': 'বাকি ক্যাশ অন ডেলিভারি'},
+    'need_help_order': {'en': 'Need assistance with this order?', 'bn': 'এই অর্ডার নিয়ে কোনো সাহায্য প্রয়োজন?'},
+
+    // Account & Settings
+    'my_account': {'en': 'My Account', 'bn': 'আমার প্রোফাইল'},
+    'account_settings': {'en': 'Settings & Preferences', 'bn': 'সেটিংস ও প্রেফারেন্স'},
+    'app_language': {'en': 'App Language', 'bn': 'অ্যাপের ভাষা'},
+    'select_language': {'en': 'Select Language', 'bn': 'ভাষা নির্বাচন করুন'},
+    'lang_english': {'en': 'English', 'bn': 'English (ইংরেজি)'},
+    'lang_bangla': {'en': 'বাংলা', 'bn': 'বাংলা (Bangla)'},
+    'lang_changed_en': {'en': 'Language set to English', 'bn': 'ভাষা ইংরেজিতে সেট করা হয়েছে'},
+    'lang_changed_bn': {'en': 'Language set to Bengali', 'bn': 'ভাষা বাংলায় সেট করা হয়েছে'},
+    'my_orders': {'en': 'My Orders', 'bn': 'আমার অর্ডার'},
+    'recent_orders': {'en': 'Recent Orders', 'bn': 'সাম্প্রতিক অর্ডার'},
+    'view_all': {'en': 'View All', 'bn': 'সব দেখুন'},
+    'order_no': {'en': 'Order #', 'bn': 'অর্ডার #'},
+    'status_cancelled': {'en': 'Cancelled', 'bn': 'বাতিল'},
+    'status_processing': {'en': 'Processing', 'bn': 'প্রসেসিং'},
+    'status_completed': {'en': 'Delivered', 'bn': 'ডেলিভার্ড'},
+    'status_shipped': {'en': 'In Transit', 'bn': 'শিপড'},
+    'status_pending': {'en': 'Pending Payment', 'bn': 'অপেক্ষমান'},
+    'to_pay': {'en': 'To Pay', 'bn': 'To Pay'},
+    'to_ship': {'en': 'To Ship', 'bn': 'To Ship'},
+    'in_transit': {'en': 'In Transit', 'bn': 'In Transit'},
+    'delivered': {'en': 'Delivered', 'bn': 'Delivered'},
+    'returns': {'en': 'Cancelled/Return', 'bn': 'রিটার্ন/বাতিল'},
+    'logout': {'en': 'Log Out', 'bn': 'লগআউট'},
+    'login_now': {'en': 'Sign In / Register', 'bn': 'সাইন ইন / রেজিস্টার'},
+  };
+
+  static String get(String key, {required String languageCode, String fallback = ''}) {
+    final entry = _values[key];
+    if (entry == null) return fallback.isNotEmpty ? fallback : key;
+    return entry[languageCode] ?? entry['en'] ?? fallback;
+  }
+}

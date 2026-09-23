@@ -1,0 +1,56 @@
+name: Build iOS IPA (Unsigned for Sideloading)
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-ios:
+    name: Build GlowBay iOS IPA
+    runs-on: macos-14 # Fast Apple Silicon M1/M2 macOS runner
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up Java (for tools if needed)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 🐦 Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.1'
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: 🍏 Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: 🔨 Build iOS (Release, No CodeSign)
+        run: |
+          flutter build ios --release --no-codesign
+
+      - name: 📦 Package into Unsigned IPA (Payload)
+        run: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r GlowBay-App.ipa Payload
+          echo "IPA packaging complete!"
+          ls -lh GlowBay-App.ipa
+
+      - name: 🚀 Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlowBay-App-iOS-IPA
+          path: GlowBay-App.ipa
+          retention-days: 14

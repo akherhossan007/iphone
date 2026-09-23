@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "524435743928",
+    "project_id": "glowbay-bd",
+    "storage_bucket": "glowbay-bd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524435743928:android:d7e847a77f42a2f5bc004d",
+        "android_client_info": {
+          "package_name": "com.glowbaybd.glowbay_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791811563157-lo60pbggt7s00gjftn5ebbrb5tumerr7.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "524435743928-86v1q0p9k5b45g7flm434r7b6p8i3k2j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.glowbaybd.glowbay_app",
+            "certificate_hash": "73a71b9f3469fe55bac651c81f87658991b7e931"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpy5dpJBY1MBc23OgxMMb97jUuIpXOtws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
