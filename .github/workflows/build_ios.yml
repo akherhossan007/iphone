@@ -43,29 +43,31 @@ jobs:
           pod install || pod install --repo-update || true
           cd ..
 
-      - name: 🔨 Build iOS IPA (Release, No CodeSign)
+      - name: 🔨 Build iOS (Release, No CodeSign)
         run: |
-          echo "=== EXECUTING FLUTTER BUILD IPA ==="
-          flutter build ipa --release --no-codesign || flutter build ios --release --no-codesign
+          echo "=== RUNNING FLUTTER BUILD IOS ===" > xcode_build.log
+          flutter build ios --release --no-codesign >> xcode_build.log 2>&1
+          cat xcode_build.log
 
-          echo "=== LOCATING COMPILED ARTIFACTS ==="
-          find build -name "*.ipa" -o -name "Runner.app"
+      - name: 📄 Push Error Log on Failure
+        if: failure()
+        run: |
+          git config user.name "CI Log Bot"
+          git config user.email "bot@glowbay.com"
+          git checkout -B ci-log
+          git add -f xcode_build.log || true
+          git commit -m "log: capture xcode_build.log" || true
+          git push -f origin ci-log || true
 
-          IPA_FILE=$(find build/ios -name "*.ipa" | head -n 1)
-          if [ -n "$IPA_FILE" ] && [ -f "$IPA_FILE" ]; then
-            echo "Direct IPA found at $IPA_FILE"
-            cp "$IPA_FILE" GlowBay-App.ipa
-          else
-            APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
-            echo "Packaging Runner.app from: $APP_PATH"
-            mkdir -p Payload
-            cp -R "$APP_PATH" Payload/
-            zip -r -y GlowBay-App.ipa Payload
-          fi
-
-          echo "=== VERIFYING FINAL IPA ==="
+      - name: 📦 Package into Unsigned IPA (Payload)
+        run: |
+          APP_PATH=$(find build/ios -name "Runner.app" -type d | head -n 1)
+          echo "Packaging from: $APP_PATH"
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -r -y GlowBay-App.ipa Payload
+          echo "Final IPA size:"
           ls -lh GlowBay-App.ipa
-          unzip -l GlowBay-App.ipa | head -n 25
 
       - name: 🚀 Upload IPA Artifact
         uses: actions/upload-artifact@v4
@@ -78,8 +80,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: success()
         with:
-          tag_name: v1.0.1-ios
-          name: "GlowBay iOS Release IPA (v1.0.1)"
+          tag_name: v1.0.2-ios
+          name: "GlowBay iOS Release IPA (v1.0.2)"
           files: GlowBay-App.ipa
           draft: false
           prerelease: false
