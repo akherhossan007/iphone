@@ -48,7 +48,7 @@ dependencies:
   firebase_messaging: ^16.6.0
   flutter_local_notifications: ^22.3.0
   shared_preferences: ^2.5.5
-  mobile_scanner: ^5.2.3
+  mobile_scanner: ^6.0.0
   google_sign_in: ^6.2.2
   speech_to_text: ^7.4.0
   firebase_auth: ^6.7.0
