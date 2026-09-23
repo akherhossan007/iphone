@@ -25,24 +25,8 @@ jobs:
 
       - name: 📦 Install Flutter Dependencies
         run: |
-          echo "=== FLUTTER VERSION ===" > pub_err.txt
-          flutter --version >> pub_err.txt 2>&1
-          echo "=== PUB GET ===" >> pub_err.txt
-          flutter pub get >> pub_err.txt 2>&1 || true
-          cat pub_err.txt
-          if [ ! -f .dart_tool/package_config.json ]; then
-            exit 1
-          fi
-
-      - name: 📄 Push Error Log on Failure
-        if: failure()
-        run: |
-          git config user.name "CI Log Bot"
-          git config user.email "bot@glowbay.com"
-          git checkout -B ci-log
-          git add pub_err.txt
-          git commit -m "log: capture pub_err.txt"
-          git push -f origin ci-log
+          flutter --version
+          flutter pub get
 
       - name: 🍏 CocoaPods Setup
         run: |
@@ -53,7 +37,40 @@ jobs:
 
       - name: 🔨 Build iOS (Release, No CodeSign)
         run: |
-          flutter build ios --release --no-codesign
+          echo "Starting Flutter iOS unsigned build..."
+          flutter build ios --release --no-codesign > xcode_build.log 2>&1 || true
+          tail -n 50 xcode_build.log
+          if [ ! -d build/ios/iphoneos/Runner.app ]; then
+            echo "Attempting fallback build with xcodebuild..."
+            xcodebuild -workspace ios/Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              -derivedDataPath build/ios_derived \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="" \
+              build >> xcode_build.log 2>&1 || true
+            if [ -d build/ios_derived/Build/Products/Release-iphoneos/Runner.app ]; then
+              mkdir -p build/ios/iphoneos
+              cp -r build/ios_derived/Build/Products/Release-iphoneos/Runner.app build/ios/iphoneos/
+            fi
+          fi
+          if [ ! -d build/ios/iphoneos/Runner.app ]; then
+            echo "ERROR: Runner.app not found!"
+            tail -n 120 xcode_build.log
+            exit 1
+          fi
+
+      - name: 📄 Push Error Log on Failure
+        if: failure()
+        run: |
+          git config user.name "CI Log Bot"
+          git config user.email "bot@glowbay.com"
+          git checkout -B ci-log
+          git add xcode_build.log || true
+          git commit -m "log: capture xcode_build.log" || true
+          git push -f origin ci-log || true
 
       - name: 📦 Package into Unsigned IPA (Payload)
         run: |
