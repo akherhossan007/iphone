@@ -19,8 +19,6 @@ jobs:
 
       - name: 🍏 Select Xcode 16
         run: |
-          echo "Available Xcode installations:"
-          ls -d /Applications/Xcode*.app || true
           sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer || \
           sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer || \
           sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer || \
@@ -36,61 +34,38 @@ jobs:
       - name: 📦 Disable SPM & Install Dependencies
         run: |
           flutter config --no-enable-swift-package-manager
-          echo "=== FLUTTER INFO ===" > build_error.log
-          flutter --version >> build_error.log 2>&1
-          echo "=== RUNNING PUB GET ===" >> build_error.log
-          flutter pub get >> build_error.log 2>&1
-          cat build_error.log
+          flutter --version
+          flutter pub get
 
       - name: 🍏 CocoaPods Setup
         run: |
           cd ios
-          pod install --repo-update || pod install || true
+          pod install || pod install --repo-update || true
           cd ..
 
-      - name: 🔨 Build iOS (Release, No CodeSign)
+      - name: 🔨 Build iOS IPA (Release, No CodeSign)
         run: |
-          echo "=== BUILDING IOS WITH COCOAPODS ===" >> build_error.log
-          flutter build ios --release --no-codesign >> build_error.log 2>&1 || true
-          cat build_error.log
-          if [ ! -d build/ios/iphoneos/Runner.app ]; then
-            echo "Direct flutter build failed, attempting xcodebuild..." >> build_error.log
-            xcodebuild -workspace ios/Runner.xcworkspace \
-              -scheme Runner \
-              -configuration Release \
-              -destination 'generic/platform=iOS' \
-              -derivedDataPath build/ios_derived \
-              CODE_SIGNING_ALLOWED=NO \
-              CODE_SIGNING_REQUIRED=NO \
-              CODE_SIGN_IDENTITY="" \
-              build >> build_error.log 2>&1 || true
-            if [ -d build/ios_derived/Build/Products/Release-iphoneos/Runner.app ]; then
-              mkdir -p build/ios/iphoneos
-              cp -r build/ios_derived/Build/Products/Release-iphoneos/Runner.app build/ios/iphoneos/
-            fi
-          fi
-          if [ ! -d build/ios/iphoneos/Runner.app ]; then
-            echo "CRITICAL: Runner.app build failed!"
-            exit 1
+          echo "=== EXECUTING FLUTTER BUILD IPA ==="
+          flutter build ipa --release --no-codesign || flutter build ios --release --no-codesign
+
+          echo "=== LOCATING COMPILED ARTIFACTS ==="
+          find build -name "*.ipa" -o -name "Runner.app"
+
+          IPA_FILE=$(find build/ios -name "*.ipa" | head -n 1)
+          if [ -n "$IPA_FILE" ] && [ -f "$IPA_FILE" ]; then
+            echo "Direct IPA found at $IPA_FILE"
+            cp "$IPA_FILE" GlowBay-App.ipa
+          else
+            APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
+            echo "Packaging Runner.app from: $APP_PATH"
+            mkdir -p Payload
+            cp -R "$APP_PATH" Payload/
+            zip -r -y GlowBay-App.ipa Payload
           fi
 
-      - name: 📄 Push Error Log on Failure
-        if: failure()
-        run: |
-          git config user.name "CI Log Bot"
-          git config user.email "bot@glowbay.com"
-          git checkout -B ci-log
-          git add -f build_error.log
-          git commit -m "log: capture build error"
-          git push -f origin ci-log
-
-      - name: 📦 Package into Unsigned IPA (Payload)
-        run: |
-          mkdir -p Payload
-          cp -r build/ios/iphoneos/Runner.app Payload/
-          zip -r GlowBay-App.ipa Payload
-          echo "IPA packaging complete!"
+          echo "=== VERIFYING FINAL IPA ==="
           ls -lh GlowBay-App.ipa
+          unzip -l GlowBay-App.ipa | head -n 25
 
       - name: 🚀 Upload IPA Artifact
         uses: actions/upload-artifact@v4
@@ -103,8 +78,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: success()
         with:
-          tag_name: v1.0.0-ios
-          name: "GlowBay iOS Release IPA"
+          tag_name: v1.0.1-ios
+          name: "GlowBay iOS Release IPA (v1.0.1)"
           files: GlowBay-App.ipa
           draft: false
           prerelease: false
