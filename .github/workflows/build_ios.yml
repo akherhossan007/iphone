@@ -22,8 +22,24 @@ jobs:
 
       - name: 📦 Install Flutter Dependencies
         run: |
-          flutter --version
-          flutter pub get
+          echo "### Flutter & Dart Version" >> $GITHUB_STEP_SUMMARY
+          flutter --version >> $GITHUB_STEP_SUMMARY
+          echo "### Pub Get Result" >> $GITHUB_STEP_SUMMARY
+          if ! flutter pub get > pub_err.txt 2>&1; then
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat pub_err.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat pub_err.txt
+            exit 1
+          fi
+          echo "Pub get succeeded!" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📄 Upload Error Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-log
+          path: pub_err.txt
 
       - name: 🍏 CocoaPods Setup
         run: |
