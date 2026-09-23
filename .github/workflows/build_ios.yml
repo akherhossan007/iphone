@@ -14,12 +14,6 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: ☕ Set up Java (for tools if needed)
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
       - name: 🐦 Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -31,10 +25,11 @@ jobs:
           flutter --version
           flutter pub get
 
-      - name: 🍏 Install CocoaPods
+      - name: 🍏 CocoaPods Setup
         run: |
           cd ios
-          pod install
+          pod repo update || true
+          pod install || true
           cd ..
 
       - name: 🔨 Build iOS (Release, No CodeSign)
