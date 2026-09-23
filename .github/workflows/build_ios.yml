@@ -25,23 +25,25 @@ jobs:
 
       - name: 📦 Install Flutter Dependencies
         run: |
-          flutter --version
-          flutter pub get
+          echo "=== FLUTTER INFO ===" > build_error.log
+          flutter --version >> build_error.log 2>&1
+          echo "=== RUNNING PUB GET ===" >> build_error.log
+          flutter pub get >> build_error.log 2>&1
+          cat build_error.log
 
       - name: 🍏 CocoaPods Setup
         run: |
           cd ios
-          pod repo update || true
           pod install || true
           cd ..
 
       - name: 🔨 Build iOS (Release, No CodeSign)
         run: |
-          echo "Starting Flutter iOS unsigned build..."
-          flutter build ios --release --no-codesign > xcode_build.log 2>&1 || true
-          tail -n 50 xcode_build.log
+          echo "=== BUILDING IOS ===" >> build_error.log
+          flutter build ios --release --no-codesign >> build_error.log 2>&1 || true
+          cat build_error.log
           if [ ! -d build/ios/iphoneos/Runner.app ]; then
-            echo "Attempting fallback build with xcodebuild..."
+            echo "Direct flutter build failed, attempting xcodebuild..." >> build_error.log
             xcodebuild -workspace ios/Runner.xcworkspace \
               -scheme Runner \
               -configuration Release \
@@ -50,15 +52,14 @@ jobs:
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGN_IDENTITY="" \
-              build >> xcode_build.log 2>&1 || true
+              build >> build_error.log 2>&1 || true
             if [ -d build/ios_derived/Build/Products/Release-iphoneos/Runner.app ]; then
               mkdir -p build/ios/iphoneos
               cp -r build/ios_derived/Build/Products/Release-iphoneos/Runner.app build/ios/iphoneos/
             fi
           fi
           if [ ! -d build/ios/iphoneos/Runner.app ]; then
-            echo "ERROR: Runner.app not found!"
-            tail -n 120 xcode_build.log
+            echo "CRITICAL: Runner.app build failed!"
             exit 1
           fi
 
@@ -68,9 +69,9 @@ jobs:
           git config user.name "CI Log Bot"
           git config user.email "bot@glowbay.com"
           git checkout -B ci-log
-          git add xcode_build.log || true
-          git commit -m "log: capture xcode_build.log" || true
-          git push -f origin ci-log || true
+          git add -f build_error.log
+          git commit -m "log: capture build error"
+          git push -f origin ci-log
 
       - name: 📦 Package into Unsigned IPA (Payload)
         run: |
