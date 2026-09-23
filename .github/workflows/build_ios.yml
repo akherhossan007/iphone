@@ -1,14 +1,14 @@
 name: Build iOS IPA (Unsigned for Sideloading)
 
 on:
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+  workflow_dispatch:
   push:
     branches: [ main, master ]
 
 jobs:
   build-ios:
     name: Build GlowBay iOS IPA
-    runs-on: macos-14 # Fast Apple Silicon M1/M2 macOS runner
+    runs-on: macos-14
 
     steps:
       - name: 📥 Checkout Repository
@@ -23,17 +23,18 @@ jobs:
       - name: 🐦 Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.1'
           channel: 'stable'
           cache: true
 
       - name: 📦 Install Flutter Dependencies
-        run: flutter pub get
+        run: |
+          flutter --version
+          flutter pub get
 
       - name: 🍏 Install CocoaPods
         run: |
           cd ios
-          pod install --repo-update
+          pod install
           cd ..
 
       - name: 🔨 Build iOS (Release, No CodeSign)
