@@ -24,6 +24,7 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer || \
           sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer || true
           xcodebuild -version
+          xcodebuild -showsdks
 
       - name: 🐦 Set up Flutter
         uses: subosito/flutter-action@v2
@@ -49,15 +50,16 @@ jobs:
           flutter build ios --release --no-codesign >> xcode_build.log 2>&1 || true
           cat xcode_build.log
           
-          APP_PATH=$(find build/ios -name "Runner.app" -type d | head -n 1)
+          APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
           if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
-            echo "Runner.app not found from flutter build, running xcodebuild directly..." >> xcode_build.log
-            xcodebuild build -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" >> xcode_build.log 2>&1 || true
+            echo "Runner.app not found from flutter build, running xcodebuild directly with -sdk iphoneos..." >> xcode_build.log
+            xcodebuild build -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" >> xcode_build.log 2>&1 || true
             APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
           fi
           
           if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
             echo "FATAL: Runner.app could not be found anywhere!" >> xcode_build.log
+            find . -name "*.app" -type d >> xcode_build.log || true
             exit 1
           fi
           echo "FOUND_APP_PATH=$APP_PATH" >> $GITHUB_ENV
