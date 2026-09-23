@@ -47,8 +47,8 @@ jobs:
       - name: 🔨 Build iOS (Release, No CodeSign)
         run: |
           echo "=== RUNNING FLUTTER BUILD IOS ===" > xcode_build.log
-          flutter build ios --release --no-codesign >> xcode_build.log 2>&1 || true
-          cat xcode_build.log
+          flutter build ios --release --no-codesign -v >> xcode_build.log 2>&1 || true
+          tail -n 100 xcode_build.log
           
           echo "=== SEARCHING FOR RUNNER.APP ===" >> xcode_build.log
           find build -name "*.app" -type d >> xcode_build.log 2>&1 || true
