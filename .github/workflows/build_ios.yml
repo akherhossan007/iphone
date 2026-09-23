@@ -51,12 +51,12 @@ jobs:
           tail -n 100 xcode_build.log
           
           echo "=== SEARCHING FOR RUNNER.APP ===" >> xcode_build.log
-          find build -name "*.app" -type d >> xcode_build.log 2>&1 || true
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData build ~ -name "Runner.app" -type d 2>/dev/null | head -n 1)
+          echo "Discovered APP_PATH: $APP_PATH" >> xcode_build.log
           
-          APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
           if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
             echo "FATAL: Runner.app could not be found anywhere!" >> xcode_build.log
-            find . -name "*.app" -type d >> xcode_build.log || true
+            find ~ -name "*.app" -type d 2>/dev/null >> xcode_build.log || true
             exit 1
           fi
           echo "FOUND_APP_PATH=$APP_PATH" >> $GITHUB_ENV
