@@ -50,13 +50,10 @@ jobs:
           flutter build ios --release --no-codesign >> xcode_build.log 2>&1 || true
           cat xcode_build.log
           
-          APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
-          if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
-            echo "Runner.app not found from flutter build, running xcodebuild directly with -sdk iphoneos..." >> xcode_build.log
-            xcodebuild build -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" >> xcode_build.log 2>&1 || true
-            APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
-          fi
+          echo "=== SEARCHING FOR RUNNER.APP ===" >> xcode_build.log
+          find build -name "*.app" -type d >> xcode_build.log 2>&1 || true
           
+          APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
           if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
             echo "FATAL: Runner.app could not be found anywhere!" >> xcode_build.log
             find . -name "*.app" -type d >> xcode_build.log || true
