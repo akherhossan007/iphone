@@ -25,6 +25,9 @@ jobs:
 
       - name: 📦 Install Flutter Dependencies
         run: |
+          mkdir -p build/ios/SourcePackages
+          mkdir -p build/ios/iphoneos
+          mkdir -p ios/Flutter
           echo "=== FLUTTER INFO ===" > build_error.log
           flutter --version >> build_error.log 2>&1
           echo "=== RUNNING PUB GET ===" >> build_error.log
