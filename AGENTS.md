@@ -1218,3 +1218,27 @@ When given ANY task by the user:
 - **Verification & Status**:
   - `flutter analyze`: **No issues found!** (0 errors, 0 warnings).
   - Release APK building in progress for `D:\Glowbay App\GlowBay-App-Release.apk`.
+
+---
+
+### Module 43: iOS Unsigned IPA Build Pipeline & Free Sideloading Architecture
+- **Agent**: Antigravity
+- **Session Date**: 2026-09-23
+- **User Directive**: "daw .ipa" / "developer account নাই"
+- **Context & Constraints**:
+  - Windows environment cannot locally compile iOS binaries (Apple requires macOS Xcode SDK).
+  - User has no paid Apple Developer Account ($99/year) and intends to test on real iPhone via sideloading (Sideloadly / AltStore) using a free Apple ID.
+- **Architectural Implementation**:
+  1. **GitHub Actions macOS CI Pipeline (`.github/workflows/build_ios.yml`)**:
+     - Configured runner on `macos-14` (Apple Silicon M1/M2).
+     - Automated steps: Checkout, Flutter 3.47.1 setup, CocoaPods install (`pod install --repo-update`), `flutter build ios --release --no-codesign`.
+     - Packages `build/ios/iphoneos/Runner.app` into `Payload/Runner.app` -> `GlowBay-App.ipa`.
+     - Automatically uploads `GlowBay-App.ipa` as an artifact downloadable from GitHub Actions.
+  2. **iOS CocoaPods Podfile (`ios/Podfile`)**:
+     - Configured deployment target to iOS 14.0 with modular headers and Flutter build settings post-install hook.
+  3. **Repository Cleanliness & Version Control**:
+     - Initialized git tracking in `D:\Glowbay App`, configured `.gitignore` to omit local APKs, root scrapes, and temporary dumps.
+     - Created initial commit `feat: setup iOS unsigned build workflow for GitHub Actions`.
+  4. **Sideloading Flow (No Dev Account Required)**:
+     - Sideloadly tool on Windows re-signs `GlowBay-App.ipa` with user's free Apple ID 7-day personal certificate and installs directly to iPhone over USB.
+
